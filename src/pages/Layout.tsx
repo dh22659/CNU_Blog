@@ -60,14 +60,20 @@ const Layout = () => {
       <Profile>
         {/*todo (1) 프로필 꾸미기*/}
         <div>
-          <ProfilePicture src="" alt="프로필 사진" />
+          <ProfilePicture
+            src="http://www.rocketmap.kr/data/file/free/989972396_oUsiCbjq_c09327eee1892fa3eed8b4b3c7997b2559158796.gif"
+            alt="프로필 사진"
+          />
         </div>
         <div>
-          <Name>이름</Name>
-          <Description>설명</Description>
+          <Name>이동현</Name>
+          <Description>2024 실전코딩</Description>
         </div>
       </Profile>
-      <Nav>{/*todo (2) 메뉴 작성*/}</Nav>
+      <Nav>
+        <NavLink to="/">포스트</NavLink>
+        <NavLink to="/resume">소개</NavLink>
+      </Nav>
       <Outlet />
     </div>
   );

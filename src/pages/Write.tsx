@@ -3,6 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { createPost, getPostById, updatePostById } from '../api';
 import { TAG } from '../api/types';
+import Tag from '../components/Tag.tsx';
+import useGetPostById from '../queries/useGetPostById.ts';
+import useCreatePost from '../queries/useCreatePost.ts';
+import useUpdatePostById from '../queries/useUpdatePostById.ts';
 
 const TitleInput = styled.input`
   display: block;
@@ -85,12 +89,79 @@ const SaveButton = styled.button`
 `;
 
 const Write = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const isEdit = state?.postId;
   // todo (5) 게시글 작성 페이지 만들기
+  const [title, setTitle] = useState('');
+  const [contents, setContents] = useState('');
+  const [tag, setTag] = useState<TAG>(TAG.REACT); // 초기값을 REACT로 넣었음.
+  // () => {return Object.keys(TAG)[0] as TAG; }
+  const tagList = Object.keys(TAG);
+  const { data: post, isSuccess: isSuccessfetchPost } = useGetPostById(state?.postId);
+  const { mutate: createPost, isSuccess: isCreateSuccess } = useCreatePost();
+  const { mutate: updatepost, isSuccess: isUpdateSuccess } = useUpdatePostById();
+
+  // const fetchPostById = async (postId: string) => {
+  //   const { data: post } = await getPostById(postId);
+  //   setTitle(post.title);
+  //   setContents(post.contents);
+  //   setTag(post.tag);
+  // };
+
+  useEffect(() => {
+    if (isSuccessfetchPost) {
+      setTitle(post?.title);
+      setContents(post?.contents);
+      setTag(post?.tag);
+    }
+  }, [isSuccessfetchPost]);
+
+  const clickConfirm = () => {
+    if (!title || !contents) {
+      alert('빈 값이 있습니다.');
+      return;
+    }
+
+    if (isEdit) {
+      updatepost({ postId: state.postId, title, contents, tag });
+    } else {
+      createPost({ title, contents, tag });
+    }
+    if (isCreateSuccess || isUpdateSuccess) {
+      navigate('/');
+    }
+  };
+  const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event);
+    setTitle(event.target.value);
+  };
+  const handleChangeContents = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setContents(event.target.value);
+  };
+  const handleChangeTag = (event: ChangeEvent<HTMLSelectElement>) => {
+    setTag(event.target.value as TAG);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      나는 글쓰기
-      <div style={{ height: 'calc(100% - 4rem)', paddingBottom: '4rem' }}>{/*todo (5-2) 제목 / 태그 셀렉 / 내용 입력란 추가*/}</div>
-      <BottomSheet>{/*todo (5-3) 나가기, 저장하기 버튼 추가*/}</BottomSheet>
+      <div style={{ height: 'calc(100% - 4rem)', paddingBottom: '4rem' }}>
+        <TitleInput placeholder="제목을 입력하세요" value={title} onChange={handleChangeTitle} />
+        {/* placeholder : 사용자 유도 문구 */}
+        <TagSelect placeholder="태그를 선택하세요" value={tag} onChange={handleChangeTag}>
+          {tagList.map(tag => (
+            <option key={tag}>{tag}</option>
+          ))}
+        </TagSelect>
+        {/* 태그는 여러개니까 바로 닫지 않기. */}
+        <Editor placeholder="내용을 입력하세요" value={contents} onChange={handleChangeContents} />
+      </div>
+      <BottomSheet>
+        <Link to="/">
+          <ExitButton>나가기</ExitButton>
+        </Link>
+        <SaveButton onClick={clickConfirm}>저장하기</SaveButton>
+      </BottomSheet>
     </div>
   );
 };
