@@ -1,4 +1,5 @@
-import axios, { Axios, AxiosResponse } from 'axios';
+// eslint-disable-next-line import/named
+import axios, { AxiosResponse } from 'axios';
 import { IPost, IResponsePostList } from './types';
 
 const instance = axios.create({
