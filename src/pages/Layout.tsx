@@ -60,13 +60,10 @@ const Layout = () => {
       <Profile>
         {/*todo (1) 프로필 꾸미기*/}
         <div>
-          <ProfilePicture
-            src="http://www.rocketmap.kr/data/file/free/989972396_oUsiCbjq_c09327eee1892fa3eed8b4b3c7997b2559158796.gif"
-            alt="프로필 사진"
-          />
+          <ProfilePicture src="https://appdata.hungryapp.co.kr/data_file/data_img_m/201704/10/M149181703754073236.gif" alt="프로필 사진" />
         </div>
         <div>
-          <Name>이동현</Name>
+          <Name>동현이</Name>
           <Description>2024 실전코딩</Description>
         </div>
       </Profile>
